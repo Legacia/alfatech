@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fluxo de Projetos | Project Flow</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-primary: #0f0f23;
+      --bg-secondary: #1a1a3e;
+      --bg-card: rgba(30, 30, 60, 0.6);
+      --bg-panel: rgba(30, 30, 60, 0.5);
+      --text-primary: #f1f5f9;
+      --text-secondary: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent-indigo: #6366f1;
+      --accent-violet: #8b5cf6;
+      --accent-fuchsia: #d946ef;
+      --accent-pink: #ec4899;
+      --border-light: rgba(255, 255, 255, 0.1);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+      font-family: 'Outfit', 'Segoe UI', sans-serif;
+      color: var(--text-secondary);
+      padding: 2rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .background-decor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(217, 70, 239, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.1) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+      animation: fadeInDown 0.6s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInLeft {
+      from { opacity: 0; transform: translateX(-50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes fadeInRight {
+      from { opacity: 0; transform: translateX(50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .title-section {
+      flex: 1;
+    }
+
+    .title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #818cf8, #c084fc, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* Language Switcher */
+    .lang-switcher {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-card);
+      border-radius: 2rem;
+      padding: 0.25rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-light);
+    }
+
+    .lang-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 1.5rem;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: inherit;
+    }
+
+    .lang-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .lang-btn:active {
+      transform: scale(0.95);
+    }
+
+    .lang-btn.active {
+      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet));
+      color: #fff;
+    }
+
+    /* Main Grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(300px, 400px) 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Panels */
+    .panel {
+      background: var(--bg-panel);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      animation: fadeInLeft 0.6s ease-out 0.3s both;
+    }
+
+    .flow-panel {
+      background: rgba(30, 30, 60, 0.3);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      min-height: 500px;
+      animation: fadeInRight 0.6s ease-out 0.4s both;
+    }
+
+    .panel-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .panel-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet));
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border-light);
+      background: rgba(15, 15, 35, 0.8);
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+    }
+
+    .form-select:focus {
+      border-color: var(--accent-indigo);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+    }
+
+    .form-select option {
+      background: #1a1a3e;
+      color: var(--text-secondary);
+      padding: 0.5rem;
+    }
+
+    .toggle-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      min-width: 80px;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border-light);
+      background: rgba(15, 15, 35, 0.8);
+      color: var(--text-dim);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .toggle-btn:hover {
+      transform: scale(1.02);
+    }
+
+    .toggle-btn:active {
+      transform: scale(0.98);
+    }
+
+    .toggle-btn.active {
+      border-color: var(--accent-indigo);
+      background: rgba(99, 102, 241, 0.2);
+      color: #a5b4fc;
+    }
+
+    /* Flow Header */
+    .flow-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .flow-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .flow-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      margin-top: 0.25rem;
+    }
+
+    .step-count {
+      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet));
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      animation: scaleIn 0.4s ease-out;
+    }
+
+    /* Timeline */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .timeline-line {
+      position: absolute;
+      left: 1.75rem;
+      top: 4rem;
+      bottom: 4rem;
+      width: 2px;
+      background: linear-gradient(180deg, #6366f1 0%, #d946ef 50%, #f97316 100%);
+      border-radius: 1px;
+      opacity: 0.5;
+    }
+
+    /* Step Card */
+    .step-card {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 1.25rem;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      border: 1px solid var(--border-subtle);
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: fadeInUp 0.5s ease-out both;
+    }
+
+    .step-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .step-number {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      border: 2px solid;
+      transition: all 0.3s ease;
+    }
+
+    .step-card:hover .step-number {
+      animation: pulse 0.6s ease;
+    }
+
+    .step-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .step-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .step-role {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-description {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    .step-avatar {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      width: 2.5rem;
+      height: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .step-card:hover .step-avatar {
+      transform: scale(1.2) rotate(10deg);
+    }
+
+    /* Empty State */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 300px;
+      color: var(--text-dim);
+      text-align: center;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(30, 30, 60, 0.5);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #6366f1, #8b5cf6);
+      border-radius: 4px;
+    }
+
+    /* Hidden class for animation */
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="background-decor"></div>
+  
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="title-section">
+        <h1 class="title" data-i18n="title">Fluxo de Projetos</h1>
+        <p class="subtitle" data-i18n="subtitle">Descubra quem estará envolvido no seu projeto</p>
+      </div>
+      
+      <div class="lang-switcher">
+        <button class="lang-btn active" data-lang="pt" onclick="setLanguage('pt')">🇧🇷 PT</button>
+        <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">🇺🇸 EN</button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-grid">
+      <!-- Configuration Panel -->
+      <div class="panel">
+        <h2 class="panel-title">
+          <span class="panel-icon">⚙️</span>
+          <span data-i18n="projectConfig">Configure seu Projeto</span>
+        </h2>
+
+        <!-- Project Type -->
+        <div class="form-group">
+          <label class="form-label" data-i18n="projectType">Tipo de Projeto</label>
+          <select class="form-select" id="projectType" onchange="updateFlow()">
+            <option value="">-- Selecione --</option>
+            <option value="app-mobile-web" data-i18n-option="projectTypes.app-mobile-web">Aplicativo Mobile ou Web</option>
+            <option value="landing-page" data-i18n-option="projectTypes.landing-page">Landing Page de Campanha</option>
+            <option value="api-integration" data-i18n-option="projectTypes.api-integration">Integração com Sistema Externo / API</option>
+            <option value="internal-tool" data-i18n-option="projectTypes.internal-tool">Ferramenta Interna de Uso Recorrente</option>
+            <option value="microservice" data-i18n-option="projectTypes.microservice">Microserviço de Back-end</option>
+            <option value="dashboard-bi" data-i18n-option="projectTypes.dashboard-bi">Dashboard de Dados / BI</option>
+            <option value="data-query" data-i18n-option="projectTypes.data-query">Query ou Análise Específica de Dados</option>
+            <option value="data-alerts" data-i18n-option="projectTypes.data-alerts">Sistema de Alertas de Dados</option>
+            <option value="outros" data-i18n-option="projectTypes.outros">Outros</option>
+          </select>
+        </div>
+
+        <!-- Has UI -->
+        <div class="form-group">
+          <label class="form-label" data-i18n="hasUI">O projeto tem interface de usuário?</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" data-field="hasUI" data-value="true" onclick="toggleOption(this)">
+              ✓ <span data-i18n="yes">Sim</span>
+            </button>
+            <button class="toggle-btn" data-field="hasUI" data-value="false" onclick="toggleOption(this)">
+              ✗ <span data-i18n="no">Não</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Involves Data -->
+        <div class="form-group">
+          <label class="form-label" data-i18n="involvesData">Envolve dados, métricas, queries ou BI?</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" data-field="involvesData" data-value="true" onclick="toggleOption(this)">
+              ✓ <span data-i18n="yes">Sim</span>
+            </button>
+            <button class="toggle-btn" data-field="involvesData" data-value="false" onclick="toggleOption(this)">
+              ✗ <span data-i18n="no">Não</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Backend Complexity -->
+        <div class="form-group">
+          <label class="form-label" data-i18n="backendComplexity">Complexidade de Back-end</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" data-field="backendComplexity" data-value="low" onclick="toggleOption(this)">
+              <span data-i18n="complexityLevels.low">Baixa</span>
+            </button>
+            <button class="toggle-btn" data-field="backendComplexity" data-value="medium" onclick="toggleOption(this)">
+              <span data-i18n="complexityLevels.medium">Média</span>
+            </button>
+            <button class="toggle-btn" data-field="backendComplexity" data-value="high" onclick="toggleOption(this)">
+              <span data-i18n="complexityLevels.high">Alta</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Project Nature -->
+        <div class="form-group">
+          <label class="form-label" data-i18n="projectNature">Natureza do Projeto</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" data-field="isRapidPrototype" data-value="true" onclick="toggleOption(this)">
+              🚀 <span data-i18n="projectNatures.rapid">Prototipagem rápida</span>
+            </button>
+            <button class="toggle-btn" data-field="isRapidPrototype" data-value="false" onclick="toggleOption(this)">
+              🏛️ <span data-i18n="projectNatures.sustainable">Solução sustentável</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flow Panel -->
+      <div class="flow-panel">
+        <div class="flow-header">
+          <div>
+            <h2 class="flow-title" data-i18n="flowTitle">Fluxo do Projeto</h2>
+            <p class="flow-subtitle" data-i18n="flowSubtitle">Pessoas envolvidas em cada etapa</p>
+          </div>
+          <div class="step-count" id="stepCount" style="display: none;">
+            <span id="stepCountNumber">0</span> <span data-i18n="step">Etapa</span>s
+          </div>
+        </div>
+
+        <div id="flowContainer">
+          <div class="empty-state" id="emptyState">
+            <div class="empty-icon">🎯</div>
+            <p data-i18n="noFlow">Configure as opções acima para ver o fluxo</p>
+          </div>
+          <div class="timeline" id="timeline" style="display: none;">
+            <div class="timeline-line" id="timelineLine"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 🌐 TRANSLATIONS
+    // ═══════════════════════════════════════════════════════════════════════════
+    
+    const translations = {
+      pt: {
+        title: 'Fluxo de Projetos',
+        subtitle: 'Descubra quem estará envolvido no seu projeto',
+        projectConfig: 'Configure seu Projeto',
+        projectType: 'Tipo de Projeto',
+        projectTypes: {
+          'app-mobile-web': 'Aplicativo Mobile ou Web',
+          'landing-page': 'Landing Page de Campanha',
+          'api-integration': 'Integração com Sistema Externo / API',
+          'internal-tool': 'Ferramenta Interna de Uso Recorrente',
+          'microservice': 'Microserviço de Back-end',
+          'dashboard-bi': 'Dashboard de Dados / BI',
+          'data-query': 'Query ou Análise Específica de Dados',
+          'data-alerts': 'Sistema de Alertas de Dados',
+          'outros': 'Outros',
+        },
+        hasUI: 'O projeto tem interface de usuário?',
+        involvesData: 'Envolve dados, métricas, queries ou BI?',
+        backendComplexity: 'Complexidade de Back-end',
+        complexityLevels: {
+          low: 'Baixa',
+          medium: 'Média',
+          high: 'Alta',
+        },
+        projectNature: 'Natureza do Projeto',
+        projectNatures: {
+          rapid: 'Prototipagem rápida',
+          sustainable: 'Solução sustentável',
+        },
+        yes: 'Sim',
+        no: 'Não',
+        flowTitle: 'Fluxo do Projeto',
+        flowSubtitle: 'Pessoas envolvidas em cada etapa',
+        step: 'Etapa',
+        noFlow: 'Configure as opções acima para ver o fluxo',
+        roles: {
+          'Product Manager': 'Product Manager',
+          'UX Researcher': 'UX Researcher',
+          'UI Designer': 'UI Designer',
+          'Product Owner': 'Product Owner',
+          'Analista de Dados': 'Analista de Dados',
+          'Team Lead Back-end': 'Team Lead Back-end',
+          'Dev Back-end (Integrações de API)': 'Dev Back-end (Integrações)',
+          'Dev Back-end (Sustentação)': 'Dev Back-end (Sustentação)',
+          'Dev Back-end (Estruturação)': 'Dev Back-end (Estruturação)',
+          'Team Lead Full Stack': 'Team Lead Full Stack',
+          'Full Stack Júnior': 'Full Stack Júnior',
+          'QA - Testes Manuais': 'QA - Testes Manuais',
+          'QA - Testes Automatizados': 'QA - Testes Automatizados',
+        },
+        descriptions: {
+          'Product Manager': 'Define visão, escopo e prioridades do projeto',
+          'UX Researcher': 'Pesquisa necessidades dos usuários e valida soluções',
+          'UI Designer': 'Cria interfaces visuais e protótipos',
+          'Product Owner': 'Cria tarefas, fatia histórias e prioriza entregas',
+          'Analista de Dados': 'Define queries, métricas e estrutura de dados',
+          'Team Lead Back-end': 'Arquiteta soluções de alta complexidade',
+          'Dev Back-end (Integrações de API)': 'Desenvolve integrações com APIs externas',
+          'Dev Back-end (Sustentação)': 'Mantém e evolui sistemas recorrentes',
+          'Dev Back-end (Estruturação)': 'Estrutura microserviços e back-end estável',
+          'Team Lead Full Stack': 'Lidera desenvolvimento de interfaces complexas',
+          'Full Stack Júnior': 'Prototipa rapidamente MVPs e landing pages',
+          'QA - Testes Manuais': 'Executa testes manuais de qualidade',
+          'QA - Testes Automatizados': 'Implementa testes automatizados',
+          'Product Owner (Validação)': 'Valida entrega com solicitante e aprova',
+        },
+      },
+      en: {
+        title: 'Project Flow',
+        subtitle: 'Discover who will be involved in your project',
+        projectConfig: 'Configure your Project',
+        projectType: 'Project Type',
+        projectTypes: {
+          'app-mobile-web': 'Mobile or Web Application',
+          'landing-page': 'Campaign Landing Page',
+          'api-integration': 'External System / API Integration',
+          'internal-tool': 'Internal Recurring Use Tool',
+          'microservice': 'Back-end Microservice',
+          'dashboard-bi': 'Data Dashboard / BI',
+          'data-query': 'Specific Data Query or Analysis',
+          'data-alerts': 'Data Alerts System',
+          'outros': 'Others',
+        },
+        hasUI: 'Does the project have a user interface?',
+        involvesData: 'Involves data, metrics, queries or BI?',
+        backendComplexity: 'Back-end Complexity',
+        complexityLevels: {
+          low: 'Low',
+          medium: 'Medium',
+          high: 'High',
+        },
+        projectNature: 'Project Nature',
+        projectNatures: {
+          rapid: 'Rapid prototyping',
+          sustainable: 'Sustainable solution',
+        },
+        yes: 'Yes',
+        no: 'No',
+        flowTitle: 'Project Flow',
+        flowSubtitle: 'People involved in each step',
+        step: 'Step',
+        noFlow: 'Configure the options above to see the flow',
+        roles: {
+          'Product Manager': 'Product Manager',
+          'UX Researcher': 'UX Researcher',
+          'UI Designer': 'UI Designer',
+          'Product Owner': 'Product Owner',
+          'Analista de Dados': 'Data Analyst',
+          'Team Lead Back-end': 'Back-end Team Lead',
+          'Dev Back-end (Integrações de API)': 'Back-end Dev (API Integrations)',
+          'Dev Back-end (Sustentação)': 'Back-end Dev (Maintenance)',
+          'Dev Back-end (Estruturação)': 'Back-end Dev (Architecture)',
+          'Team Lead Full Stack': 'Full Stack Team Lead',
+          'Full Stack Júnior': 'Junior Full Stack',
+          'QA - Testes Manuais': 'QA - Manual Testing',
+          'QA - Testes Automatizados': 'QA - Automated Testing',
+        },
+        descriptions: {
+          'Product Manager': 'Defines vision, scope and project priorities',
+          'UX Researcher': 'Researches user needs and validates solutions',
+          'UI Designer': 'Creates visual interfaces and prototypes',
+          'Product Owner': 'Creates tasks, slices stories and prioritizes deliveries',
+          'Analista de Dados': 'Defines queries, metrics and data structure',
+          'Team Lead Back-end': 'Architects high-complexity solutions',
+          'Dev Back-end (Integrações de API)': 'Develops external API integrations',
+          'Dev Back-end (Sustentação)': 'Maintains and evolves recurring systems',
+          'Dev Back-end (Estruturação)': 'Structures microservices and stable back-end',
+          'Team Lead Full Stack': 'Leads complex interface development',
+          'Full Stack Júnior': 'Rapidly prototypes MVPs and landing pages',
+          'QA - Testes Manuais': 'Executes manual quality testing',
+          'QA - Testes Automatizados': 'Implements automated tests',
+          'Product Owner (Validação)': 'Validates delivery with requester and approves',
+        },
+      },
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 👥 TEAM DATA
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const TEAM = {
+      matheus: { name: 'Matheus Frade', role: 'Product Manager', avatar: '🎯', color: '#6366f1' },
+      thiago: { name: 'Thiago Viana', role: 'UX Researcher', avatar: '🔍', color: '#8b5cf6' },
+      naiade: { name: 'Naiade Caparelli', role: 'UI Designer', avatar: '🎨', color: '#d946ef' },
+      ana: { name: 'Ana Will', role: 'Product Owner', avatar: '📋', color: '#ec4899' },
+      davy: { name: 'Davy Silva', role: 'Product Owner', avatar: '📋', color: '#f43f5e' },
+      caue: { name: 'Cauê Martins', role: 'Analista de Dados', avatar: '📊', color: '#f97316' },
+      ian: { name: 'Ian Mikhailov', role: 'Team Lead Back-end', avatar: '🏗️', color: '#eab308' },
+      bruna: { name: 'Bruna Santander', role: 'Dev Back-end (Integrações de API)', avatar: '🔌', color: '#84cc16' },
+      lucas: { name: 'Lucas Villas Boas', role: 'Dev Back-end (Sustentação)', avatar: '🔧', color: '#22c55e' },
+      wender: { name: 'Wender Dalber', role: 'Dev Back-end (Estruturação)', avatar: '⚙️', color: '#14b8a6' },
+      fabio: { name: 'Fabio Will', role: 'Team Lead Full Stack', avatar: '💻', color: '#06b6d4' },
+      marcus: { name: 'Marcus Ramos', role: 'Full Stack Júnior', avatar: '🚀', color: '#0ea5e9' },
+      nozomi: { name: 'Nozomi Ogihara', role: 'QA - Testes Manuais', avatar: '🧪', color: '#3b82f6' },
+      victor: { name: 'Victor Tenedini', role: 'QA - Testes Automatizados', avatar: '🤖', color: '#6366f1' },
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 🔧 STATE
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    let currentLang = 'pt';
+    let config = {
+      projectType: '',
+      hasUI: null,
+      involvesData: null,
+      backendComplexity: 'low',
+      isRapidPrototype: null,
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 🌐 LANGUAGE FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      
+      // Update language buttons
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      
+      // Update all translatable elements
+      const t = translations[lang];
+      
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        const keys = key.split('.');
+        let value = t;
+        for (const k of keys) {
+          value = value?.[k];
+        }
+        if (value) {
+          el.textContent = value;
+        }
+      });
+      
+      // Update select options
+      document.querySelectorAll('[data-i18n-option]').forEach(option => {
+        const key = option.dataset.i18nOption;
+        const keys = key.split('.');
+        let value = t;
+        for (const k of keys) {
+          value = value?.[k];
+        }
+        if (value) {
+          option.textContent = value;
+        }
+      });
+      
+      // Re-render flow with new language
+      updateFlow();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 🎛️ CONFIG FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function toggleOption(btn) {
+      const field = btn.dataset.field;
+      const value = btn.dataset.value === 'true' ? true : (btn.dataset.value === 'false' ? false : btn.dataset.value);
+      
+      // Update config
+      config[field] = value;
+      
+      // Update button states
+      const siblings = btn.parentElement.querySelectorAll('.toggle-btn');
+      siblings.forEach(sibling => {
+        sibling.classList.toggle('active', sibling === btn);
+      });
+      
+      updateFlow();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // ⚙️ FLOW ENGINE
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function generateFlow() {
+      const { projectType, hasUI, involvesData, backendComplexity, isRapidPrototype } = config;
+      
+      if (!projectType) return [];
+      
+      const flow = [];
+      let stepNumber = 1;
+      
+      const addStep = (teamMember, customDescription = null) => {
+        flow.push({
+          step: stepNumber++,
+          person: teamMember.name,
+          role: teamMember.role,
+          avatar: teamMember.avatar,
+          color: teamMember.color,
+          descriptionKey: customDescription || teamMember.role,
+        });
+      };
+
+      // 1. SEMPRE começa com Matheus (Product Manager)
+      addStep(TEAM.matheus);
+
+      // 2. Se envolve dados → Cauê Martins
+      const dataRelatedTypes = ['dashboard-bi', 'data-query', 'data-alerts'];
+      const needsDataAnalyst = involvesData || dataRelatedTypes.includes(projectType);
+      
+      if (needsDataAnalyst) {
+        addStep(TEAM.caue);
+      }
+
+      // 3. Se tem interface de usuário → UX Research + UI Design
+      const uiRelatedTypes = ['app-mobile-web', 'landing-page', 'dashboard-bi', 'internal-tool'];
+      const needsUI = hasUI || uiRelatedTypes.includes(projectType);
+      
+      if (needsUI) {
+        addStep(TEAM.thiago);
+        addStep(TEAM.naiade);
+      }
+
+      // 4. Product Owners para criar tarefas (sempre que houver desenvolvimento)
+      const needsDevelopment = projectType !== 'data-query';
+      
+      if (needsDevelopment) {
+        addStep(TEAM.ana);
+        addStep(TEAM.davy);
+      }
+
+      // 5. Back-end Development
+      const backendTypes = ['api-integration', 'internal-tool', 'microservice', 'app-mobile-web', 'data-alerts', 'outros'];
+      const needsBackend = backendTypes.includes(projectType) || backendComplexity !== 'low';
+
+      if (needsBackend) {
+        // Alta complexidade → Team Lead
+        if (backendComplexity === 'high') {
+          addStep(TEAM.ian);
+        }
+
+        // Integração com APIs → Bruna
+        if (projectType === 'api-integration') {
+          addStep(TEAM.bruna);
+        }
+
+        // Ferramenta de uso recorrente → Lucas
+        if (projectType === 'internal-tool') {
+          addStep(TEAM.lucas);
+        }
+
+        // Microserviço ou complexidade média → Wender
+        if (projectType === 'microservice' || (backendComplexity === 'medium' && needsBackend)) {
+          addStep(TEAM.wender);
+        }
+      }
+
+      // 6. Front-end Development
+      const frontendTypes = ['app-mobile-web', 'dashboard-bi', 'internal-tool'];
+      const needsFrontend = needsUI && frontendTypes.includes(projectType);
+
+      if (needsFrontend && !isRapidPrototype) {
+        addStep(TEAM.fabio);
+      }
+
+      // 7. Prototipação Rápida → Marcus
+      if (isRapidPrototype || projectType === 'landing-page') {
+        const hasMarcus = flow.some(f => f.person === TEAM.marcus.name);
+        if (!hasMarcus) {
+          addStep(TEAM.marcus);
+        }
+      }
+
+      // 8. QA - Sempre que houver desenvolvimento
+      if (needsDevelopment) {
+        addStep(TEAM.nozomi);
+        addStep(TEAM.victor);
+      }
+
+      // 9. Validação Final - POs
+      if (needsDevelopment) {
+        addStep({ ...TEAM.ana, role: 'Product Owner' }, 'Product Owner (Validação)');
+      }
+
+      return flow;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 🎨 RENDER FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function renderFlow(flow) {
+      const timeline = document.getElementById('timeline');
+      const emptyState = document.getElementById('emptyState');
+      const stepCount = document.getElementById('stepCount');
+      const stepCountNumber = document.getElementById('stepCountNumber');
+      const timelineLine = document.getElementById('timelineLine');
+      const t = translations[currentLang];
+      
+      if (flow.length === 0) {
+        timeline.style.display = 'none';
+        emptyState.style.display = 'flex';
+        stepCount.style.display = 'none';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      timeline.style.display = 'flex';
+      stepCount.style.display = 'block';
+      stepCountNumber.textContent = flow.length;
+      
+      // Show/hide timeline line
+      timelineLine.style.display = flow.length > 2 ? 'block' : 'none';
+      
+      // Clear existing cards (except the line)
+      const existingCards = timeline.querySelectorAll('.step-card');
+      existingCards.forEach(card => card.remove());
+      
+      // Render cards
+      flow.forEach((step, index) => {
+        const card = document.createElement('div');
+        card.className = 'step-card';
+        card.style.animationDelay = `${index * 0.1}s`;
+        
+        const roleText = t.roles[step.role] || step.role;
+        const descText = t.descriptions[step.descriptionKey] || t.descriptions[step.role] || '';
+        
+        card.innerHTML = `
+          <div class="step-number" style="
+            background: linear-gradient(135deg, ${step.color}40, ${step.color}20);
+            border-color: ${step.color};
+            color: ${step.color};
+            box-shadow: 0 0 20px ${step.color}30;
+          ">${step.step}</div>
+          <div class="step-content">
+            <div class="step-name">${step.person}</div>
+            <div class="step-role" style="color: ${step.color}">${roleText}</div>
+            <div class="step-description">${descText}</div>
+          </div>
+          <div class="step-avatar">${step.avatar}</div>
+        `;
+        
+        // Add hover effect for glow
+        card.addEventListener('mouseenter', () => {
+          card.style.boxShadow = `0 20px 40px rgba(0,0,0,0.4), 0 0 30px ${step.color}20`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.boxShadow = '';
+        });
+        
+        timeline.appendChild(card);
+      });
+    }
+
+    function updateFlow() {
+      config.projectType = document.getElementById('projectType').value;
+      const flow = generateFlow();
+      renderFlow(flow);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 🚀 INIT
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setLanguage('pt');
+    });
+  </script>
+</body>
+</html>
